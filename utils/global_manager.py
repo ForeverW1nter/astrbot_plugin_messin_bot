@@ -23,13 +23,14 @@ class GlobalManager:
         self.max_chars = long_message_config.get("max_chars", 100)
         self.max_lines = long_message_config.get("max_lines", 10)
 
-    def check_whitelist(self, user_id, group_id=None, check_type="all"):
+    def check_whitelist(self, user_id, group_id=None, check_type="all", unified_msg_origin=None):
         """检查用户是否在白名单中
         
         Args:
             user_id: 用户ID
             group_id: 群ID（如果是群消息）
             check_type: 检查类型：all（所有功能）或 ai（AI功能）
+            unified_msg_origin: 统一消息来源标识
             
         Returns:
             bool: 是否通过检查
@@ -40,17 +41,36 @@ class GlobalManager:
         else:
             check_list = self.all_whitelist
         
-        # 获取检查对象（群ID优先，然后是用户ID）
-        check_target = group_id if group_id else user_id
-        check_target = str(check_target)
+        # 如果白名单为空，默认允许所有
+        if not check_list:
+            return True
+        
+        # 获取检查对象
+        check_targets = []
+        if group_id:
+            check_targets.append(str(group_id))
+        if user_id:
+            check_targets.append(str(user_id))
+        if unified_msg_origin:
+            check_targets.append(unified_msg_origin)
+        
+        # 如果没有检查对象，默认允许所有
+        if not check_targets:
+            return True
         
         # 根据模式检查
         if self.whitelist_mode == "whitelist":
             # 白名单模式：只有在列表中的才允许
-            return check_target in check_list
+            for target in check_targets:
+                if target in check_list:
+                    return True
+            return False
         else:
             # 黑名单模式：不在列表中的都允许
-            return check_target not in check_list
+            for target in check_targets:
+                if target in check_list:
+                    return False
+            return True
 
     def is_long_message(self, message):
         """检查消息是否过长

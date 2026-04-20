@@ -87,7 +87,7 @@ class MessinBotPlugin(Star):
         
         # 初始化命令处理器
         self.base_commands = BaseCommands(self.command_prefix, self.help_message)
-        self.ai_commands = AICommands(self.deepseek_api_key)
+        self.ai_commands = AICommands(self.deepseek_api_key, self.global_manager)
         self.economy_commands = EconomyCommands(self.data_manager, {
             "initial_balance": self.initial_balance,
             "sign_in_bonus": self.sign_in_bonus,
@@ -138,9 +138,10 @@ class MessinBotPlugin(Star):
         # 获取用户ID和群ID
         user_id = event.get_sender_id()
         group_id = event.get_group_id() if hasattr(event, "get_group_id") else None
+        unified_msg_origin = getattr(event, "unified_msg_origin", None)
         
         # 检查所有功能的白名单
-        if not self.global_manager.check_whitelist(user_id, group_id, "all"):
+        if not self.global_manager.check_whitelist(user_id, group_id, "all", unified_msg_origin):
             yield event.plain_result("您没有权限使用此功能")
             return
         
@@ -157,7 +158,7 @@ class MessinBotPlugin(Star):
         
         # 检查AI功能的白名单
         if sub_command == "ai":
-            if not self.global_manager.check_whitelist(user_id, group_id, "ai"):
+            if not self.global_manager.check_whitelist(user_id, group_id, "ai", unified_msg_origin):
                 yield event.plain_result("您没有权限使用AI功能")
                 return
         
@@ -246,27 +247,35 @@ class MessinBotPlugin(Star):
         else:
             yield event.plain_result(f"未知命令：{sub_command}，请使用 mes help 查看可用命令")
 
-    # 全局消息处理
-    @event_message_type(EventMessageType.ALL)
+    # 全局消息处理 - 高优先级拦截
+    @event_message_type(EventMessageType.ALL, priority=999999999)
     async def on_all_message(self, event: AstrMessageEvent) -> AsyncGenerator:
         """处理所有消息，实现全局功能"""
         # 获取用户ID和群ID
         user_id = event.get_sender_id()
         group_id = event.get_group_id() if hasattr(event, "get_group_id") else None
+        unified_msg_origin = getattr(event, "unified_msg_origin", None)
+        
+        # 检查所有功能的白名单
+        if not self.global_manager.check_whitelist(user_id, group_id, "all", unified_msg_origin):
+            # 不在白名单中，阻止消息处理
+            logger.info(f"用户 {user_id} 不在白名单中，消息已阻止")
+            # 停止事件传递
+            event.stop_event()
+            return
+        
+        # 检查AI白名单（适用于所有消息，包括其他插件的AI调用）
+        # 这里我们假设所有消息都可能触发AI接口调用
+        # 实际应用中，你可能需要根据具体情况进行更精确的判断
+        if not self.global_manager.check_whitelist(user_id, group_id, "ai", unified_msg_origin):
+            # 不在AI白名单中，阻止消息处理
+            logger.info(f"用户 {user_id} 不在AI白名单中，AI相关消息已阻止")
+            # 停止事件传递
+            event.stop_event()
+            return
         
         # 获取消息内容
         message_content = event.message_str.strip()
-        
-        # 检查是否是AI消息（这里简化处理，实际需要根据具体情况判断）
-        # 假设AI消息以特定前缀或格式发送
-        is_ai_message = False
-        # 这里可以添加判断逻辑，例如检查消息来源、格式等
-        
-        # 如果是AI消息，检查AI白名单
-        if is_ai_message:
-            if not self.global_manager.check_whitelist(user_id, group_id, "ai"):
-                # 这里可以记录日志或执行其他操作，但不阻止消息处理
-                logger.info(f"用户 {user_id} 尝试发送AI消息，但不在白名单中")
         
         # 检查消息是否过长
         if self.global_manager.is_long_message(message_content):
@@ -274,9 +283,6 @@ class MessinBotPlugin(Star):
             # 这里应该调用AstrBot的API将消息放入聊天记录
             # 由于AstrBot的API限制，这里暂时只记录日志
             logger.info(f"用户 {user_id} 发送了过长消息，已记录")
-        
-        # 不阻止消息的正常处理，只是进行检查和处理
-        # 注意：这里不要使用event.stop_event()，否则会阻止其他插件处理消息
 
     async def terminate(self):
         """插件卸载时调用"""
