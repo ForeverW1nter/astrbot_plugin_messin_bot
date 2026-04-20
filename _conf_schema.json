@@ -270,14 +270,78 @@
         "required": false,
         "items": {
           "mode": {
-            "description": "白名单模式：whitelist（白名单）或 blacklist（黑名单）",
+            "description": "白名单模式：whitelist（白名单）或 blacklist（黑名单）（兼容旧配置）",
             "type": "string",
             "default": "whitelist",
             "required": false
           },
+          "ai_user_mode": {
+            "description": "AI接口用户白名单模式：whitelist（白名单）或 blacklist（黑名单）",
+            "type": "string",
+            "default": "whitelist",
+            "required": false
+          },
+          "ai_group_mode": {
+            "description": "AI接口群聊白名单模式：whitelist（白名单）或 blacklist（黑名单）",
+            "type": "string",
+            "default": "whitelist",
+            "required": false
+          },
+          "all_user_mode": {
+            "description": "所有功能用户白名单模式：whitelist（白名单）或 blacklist（黑名单）",
+            "type": "string",
+            "default": "whitelist",
+            "required": false
+          },
+          "all_group_mode": {
+            "description": "所有功能群聊白名单模式：whitelist（白名单）或 blacklist（黑名单）",
+            "type": "string",
+            "default": "whitelist",
+            "required": false
+          },
+          "ai_user": {
+            "type": "list",
+            "description": "AI接口用户白名单/黑名单",
+            "default": [],
+            "required": false,
+            "items": {
+              "type": "string",
+              "description": "用户ID"
+            }
+          },
+          "ai_group": {
+            "type": "list",
+            "description": "AI接口群聊白名单/黑名单",
+            "default": [],
+            "required": false,
+            "items": {
+              "type": "string",
+              "description": "群ID"
+            }
+          },
+          "all_user": {
+            "type": "list",
+            "description": "所有功能用户白名单/黑名单",
+            "default": [],
+            "required": false,
+            "items": {
+              "type": "string",
+              "description": "用户ID"
+            }
+          },
+          "all_group": {
+            "type": "list",
+            "description": "所有功能群聊白名单/黑名单",
+            "default": [],
+            "required": false,
+            "items": {
+              "type": "string",
+              "description": "群ID"
+            }
+          },
           "ai": {
             "type": "list",
-            "description": "AI接口白名单/黑名单",
+            "description": "AI接口白名单/黑名单（兼容旧配置）",
             "default": [],
             "required": false,
             "items": {
@@ -287,7 +351,7 @@
           },
           "all": {
             "type": "list",
-            "description": "所有功能白名单/黑名单",
+            "description": "所有功能白名单/黑名单（兼容旧配置）",
             "default": [],
             "required": false,
             "items": {

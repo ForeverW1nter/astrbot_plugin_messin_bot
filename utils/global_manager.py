@@ -13,7 +13,19 @@ class GlobalManager:
         long_message_config = global_config.get("long_message", {})
         
         # 白名单配置
+        # 独立的模式配置
+        self.ai_user_mode = whitelist_config.get("ai_user_mode", "whitelist")
+        self.ai_group_mode = whitelist_config.get("ai_group_mode", "whitelist")
+        self.all_user_mode = whitelist_config.get("all_user_mode", "whitelist")
+        self.all_group_mode = whitelist_config.get("all_group_mode", "whitelist")
+        # 兼容旧配置
         self.whitelist_mode = whitelist_config.get("mode", "whitelist")
+        # 分开的白名单配置
+        self.ai_user_whitelist = whitelist_config.get("ai_user", [])
+        self.ai_group_whitelist = whitelist_config.get("ai_group", [])
+        self.all_user_whitelist = whitelist_config.get("all_user", [])
+        self.all_group_whitelist = whitelist_config.get("all_group", [])
+        # 兼容旧配置
         self.ai_whitelist = whitelist_config.get("ai", [])
         self.all_whitelist = whitelist_config.get("all", [])
         
@@ -35,11 +47,34 @@ class GlobalManager:
         Returns:
             bool: 是否通过检查
         """
-        # 确定检查的列表
+        # 确定检查的列表和模式
         if check_type == "ai":
-            check_list = self.ai_whitelist
+            if group_id:
+                # 群聊消息，使用AI群聊白名单和模式
+                check_list = self.ai_group_whitelist
+                mode = self.ai_group_mode
+            else:
+                # 用户消息，使用AI用户白名单和模式
+                check_list = self.ai_user_whitelist
+                mode = self.ai_user_mode
         else:
-            check_list = self.all_whitelist
+            if group_id:
+                # 群聊消息，使用所有功能群聊白名单和模式
+                check_list = self.all_group_whitelist
+                mode = self.all_group_mode
+            else:
+                # 用户消息，使用所有功能用户白名单和模式
+                check_list = self.all_user_whitelist
+                mode = self.all_user_mode
+        
+        # 兼容旧配置
+        if not check_list:
+            if check_type == "ai":
+                check_list = self.ai_whitelist
+            else:
+                check_list = self.all_whitelist
+            # 兼容旧模式
+            mode = self.whitelist_mode
         
         # 如果白名单为空，默认允许所有
         if not check_list:
@@ -59,7 +94,7 @@ class GlobalManager:
             return True
         
         # 根据模式检查
-        if self.whitelist_mode == "whitelist":
+        if mode == "whitelist":
             # 白名单模式：只有在列表中的才允许
             for target in check_targets:
                 if target in check_list:
