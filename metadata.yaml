@@ -1,0 +1,6 @@
+name: astrbot_plugin_messin_bot
+desc: 提供完整的机器人功能，包括基础命令、AI对话、经济系统、管理功能、娱乐功能和工具功能
+author: Forewall
+version: 1.0.0
+repo: https://github.com/ForeverW1nter/astrbot_plugin_messin_bot
+logo: logo.png
