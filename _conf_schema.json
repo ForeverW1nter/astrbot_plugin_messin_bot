@@ -4,7 +4,7 @@
     "description": "API配置",
     "default": {},
     "required": false,
-    "schema": {
+    "items": {
       "deepseek_api_key": {
         "description": "DeepSeek API密钥，用于AI对话功能",
         "type": "string",
@@ -24,10 +24,10 @@
     "description": "经济系统配置",
     "default": {},
     "required": false,
-    "schema": {
+    "items": {
       "initial_balance": {
         "description": "新用户初始金币",
-        "type": "integer",
+        "type": "int",
         "default": 1000,
         "min": 0,
         "required": false
@@ -37,17 +37,17 @@
         "description": "签到配置",
         "default": {},
         "required": false,
-        "schema": {
+        "items": {
           "bonus": {
             "description": "每日签到基础奖励",
-            "type": "integer",
+            "type": "int",
             "default": 100,
             "min": 0,
             "required": false
           },
           "streak_bonus": {
             "description": "连续签到额外奖励",
-            "type": "integer",
+            "type": "int",
             "default": 20,
             "min": 0,
             "required": false
@@ -59,10 +59,10 @@
         "description": "抽奖配置",
         "default": {},
         "required": false,
-        "schema": {
+        "items": {
           "cost": {
             "description": "抽奖花费",
-            "type": "integer",
+            "type": "int",
             "default": 50,
             "min": 1,
             "required": false
@@ -77,7 +77,8 @@
               "200金币": 200,
               "500金币": 500
             },
-            "required": false
+            "required": false,
+            "items": {}
           }
         }
       }
@@ -106,25 +107,58 @@
         "description": "获得1000金币"
       }
     ],
-    "required": false
+    "required": false,
+    "items": {
+      "type": "object",
+      "items": {
+        "id": {
+          "type": "int",
+          "description": "物品ID",
+          "required": true
+        },
+        "name": {
+          "type": "string",
+          "description": "物品名称",
+          "required": true
+        },
+        "price": {
+          "type": "int",
+          "description": "物品价格",
+          "required": true
+        },
+        "description": {
+          "type": "string",
+          "description": "物品描述",
+          "required": true
+        }
+      }
+    }
   },
   "admin": {
     "type": "object",
     "description": "管理系统配置",
     "default": {},
     "required": false,
-    "schema": {
+    "items": {
       "initial_admins": {
         "type": "list",
         "description": "初始管理员列表",
         "default": [],
-        "required": false
+        "required": false,
+        "items": {
+          "type": "string",
+          "description": "管理员ID"
+        }
       },
       "initial_whitelist": {
         "type": "list",
         "description": "初始白名单群列表",
         "default": [],
-        "required": false
+        "required": false,
+        "items": {
+          "type": "string",
+          "description": "群ID"
+        }
       }
     }
   },
@@ -133,16 +167,16 @@
     "description": "娱乐系统配置",
     "default": {},
     "required": false,
-    "schema": {
+    "items": {
       "loli": {
         "type": "object",
         "description": "图片功能配置",
         "default": {},
         "required": false,
-        "schema": {
+        "items": {
           "enabled": {
             "description": "是否启用图片功能",
-            "type": "boolean",
+            "type": "bool",
             "default": true,
             "required": false
           }
@@ -153,10 +187,10 @@
         "description": "反应功能配置",
         "default": {},
         "required": false,
-        "schema": {
+        "items": {
           "enabled": {
             "description": "是否启用反应功能",
-            "type": "boolean",
+            "type": "bool",
             "default": true,
             "required": false
           },
@@ -171,7 +205,11 @@
               "(≧∇≦)ﾉ",
               "( ´ ▽ ` )ﾉ"
             ],
-            "required": false
+            "required": false,
+            "items": {
+              "type": "string",
+              "description": "反应表情"
+            }
           }
         }
       }
@@ -182,16 +220,16 @@
     "description": "工具系统配置",
     "default": {},
     "required": false,
-    "schema": {
+    "items": {
       "bilibili": {
         "type": "object",
         "description": "Bilibili解析配置",
         "default": {},
         "required": false,
-        "schema": {
+        "items": {
           "enabled": {
             "description": "是否启用Bilibili解析功能",
-            "type": "boolean",
+            "type": "bool",
             "default": true,
             "required": false
           }
@@ -204,7 +242,7 @@
     "description": "消息配置",
     "default": {},
     "required": false,
-    "schema": {
+    "items": {
       "prefix": {
         "description": "命令前缀",
         "type": "string",
@@ -224,13 +262,13 @@
     "description": "全局配置",
     "default": {},
     "required": false,
-    "schema": {
+    "items": {
       "whitelist": {
         "type": "object",
         "description": "白名单配置",
         "default": {},
         "required": false,
-        "schema": {
+        "items": {
           "mode": {
             "description": "白名单模式：whitelist（白名单）或 blacklist（黑名单）",
             "type": "string",
@@ -241,13 +279,21 @@
             "type": "list",
             "description": "AI接口白名单/黑名单",
             "default": [],
-            "required": false
+            "required": false,
+            "items": {
+              "type": "string",
+              "description": "用户ID或群ID"
+            }
           },
           "all": {
             "type": "list",
             "description": "所有功能白名单/黑名单",
             "default": [],
-            "required": false
+            "required": false,
+            "items": {
+              "type": "string",
+              "description": "用户ID或群ID"
+            }
           }
         }
       },
@@ -256,30 +302,30 @@
         "description": "过长消息处理配置",
         "default": {},
         "required": false,
-        "schema": {
+        "items": {
           "enabled": {
             "description": "是否启用过长消息处理",
-            "type": "boolean",
+            "type": "bool",
             "default": true,
             "required": false
           },
           "max_images": {
             "description": "最大图片数量",
-            "type": "integer",
+            "type": "int",
             "default": 3,
             "min": 1,
             "required": false
           },
           "max_chars": {
             "description": "最大字符数",
-            "type": "integer",
+            "type": "int",
             "default": 100,
             "min": 1,
             "required": false
           },
           "max_lines": {
             "description": "最大行数",
-            "type": "integer",
+            "type": "int",
             "default": 10,
             "min": 1,
             "required": false
