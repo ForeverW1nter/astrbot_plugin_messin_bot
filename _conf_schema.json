@@ -1,0 +1,291 @@
+{
+  "api": {
+    "type": "dict",
+    "description": "API配置",
+    "default": {},
+    "required": false,
+    "schema": {
+      "deepseek_api_key": {
+        "description": "DeepSeek API密钥，用于AI对话功能",
+        "type": "string",
+        "default": "",
+        "required": false
+      },
+      "lolicon_api_key": {
+        "description": "Lolicon API密钥，用于获取图片功能",
+        "type": "string",
+        "default": "",
+        "required": false
+      }
+    }
+  },
+  "economy": {
+    "type": "dict",
+    "description": "经济系统配置",
+    "default": {},
+    "required": false,
+    "schema": {
+      "initial_balance": {
+        "description": "新用户初始金币",
+        "type": "integer",
+        "default": 1000,
+        "min": 0,
+        "required": false
+      },
+      "sign_in": {
+        "type": "dict",
+        "description": "签到配置",
+        "default": {},
+        "required": false,
+        "schema": {
+          "bonus": {
+            "description": "每日签到基础奖励",
+            "type": "integer",
+            "default": 100,
+            "min": 0,
+            "required": false
+          },
+          "streak_bonus": {
+            "description": "连续签到额外奖励",
+            "type": "integer",
+            "default": 20,
+            "min": 0,
+            "required": false
+          }
+        }
+      },
+      "lottery": {
+        "type": "dict",
+        "description": "抽奖配置",
+        "default": {},
+        "required": false,
+        "schema": {
+          "cost": {
+            "description": "抽奖花费",
+            "type": "integer",
+            "default": 50,
+            "min": 1,
+            "required": false
+          },
+          "rewards": {
+            "description": "抽奖奖励配置",
+            "type": "dict",
+            "default": {
+              "thanks": 1,
+              "50金币": 50,
+              "100金币": 100,
+              "200金币": 200,
+              "500金币": 500
+            },
+            "required": false
+          }
+        }
+      }
+    }
+  },
+  "shop": {
+    "type": "list",
+    "description": "商店物品配置",
+    "default": [
+      {
+        "id": 1,
+        "name": "幸运符",
+        "price": 100,
+        "description": "增加抽奖中奖概率"
+      },
+      {
+        "id": 2,
+        "name": "经验丹",
+        "price": 200,
+        "description": "增加经验值"
+      },
+      {
+        "id": 3,
+        "name": "金币袋",
+        "price": 500,
+        "description": "获得1000金币"
+      }
+    ],
+    "required": false
+  },
+  "admin": {
+    "type": "dict",
+    "description": "管理系统配置",
+    "default": {},
+    "required": false,
+    "schema": {
+      "initial_admins": {
+        "type": "list",
+        "description": "初始管理员列表",
+        "default": [],
+        "required": false
+      },
+      "initial_whitelist": {
+        "type": "list",
+        "description": "初始白名单群列表",
+        "default": [],
+        "required": false
+      }
+    }
+  },
+  "entertainment": {
+    "type": "dict",
+    "description": "娱乐系统配置",
+    "default": {},
+    "required": false,
+    "schema": {
+      "loli": {
+        "type": "dict",
+        "description": "图片功能配置",
+        "default": {},
+        "required": false,
+        "schema": {
+          "enabled": {
+            "description": "是否启用图片功能",
+            "type": "boolean",
+            "default": true,
+            "required": false
+          }
+        }
+      },
+      "reaction": {
+        "type": "dict",
+        "description": "反应功能配置",
+        "default": {},
+        "required": false,
+        "schema": {
+          "enabled": {
+            "description": "是否启用反应功能",
+            "type": "boolean",
+            "default": true,
+            "required": false
+          },
+          "reactions": {
+            "type": "list",
+            "description": "反应表情列表",
+            "default": [
+              "(๑•̀ㅂ•́)و✧",
+              "(｡･ω･｡)ﾉ♡",
+              "(≧▽≦)/",
+              "( ´▽` )ﾉ",
+              "(≧∇≦)ﾉ",
+              "( ´ ▽ ` )ﾉ"
+            ],
+            "required": false
+          }
+        }
+      }
+    }
+  },
+  "tool": {
+    "type": "dict",
+    "description": "工具系统配置",
+    "default": {},
+    "required": false,
+    "schema": {
+      "bilibili": {
+        "type": "dict",
+        "description": "Bilibili解析配置",
+        "default": {},
+        "required": false,
+        "schema": {
+          "enabled": {
+            "description": "是否启用Bilibili解析功能",
+            "type": "boolean",
+            "default": true,
+            "required": false
+          }
+        }
+      }
+    }
+  },
+  "message": {
+    "type": "dict",
+    "description": "消息配置",
+    "default": {},
+    "required": false,
+    "schema": {
+      "prefix": {
+        "description": "命令前缀",
+        "type": "string",
+        "default": "mes",
+        "required": false
+      },
+      "help_message": {
+        "description": "帮助消息",
+        "type": "string",
+        "default": "命令列表：\n- {prefix} help：显示帮助信息\n- {prefix} repeat <内容>：重复你说的话\n- {prefix} status：查看机器人状态\n- {prefix} cal <表达式>：计算数学表达式\n- {prefix} fool：随机讲一个笑话\n- {prefix} ai <内容>：智能对话\n- {prefix} create_account：创建经济账号\n- {prefix} sign_in：每日签到\n- {prefix} balance：查看余额\n- {prefix} lottery：抽奖\n- {prefix} transfer <金额> <目标用户ID>：转账\n- {prefix} leaderboard：查看排行榜\n- {prefix} shop：查看商店\n- {prefix} add_whitelist <群ID>：添加白名单\n- {prefix} remove_whitelist <群ID>：移除白名单\n- {prefix} add_admin <用户ID>：添加管理员\n- {prefix} remove_admin <用户ID>：移除管理员\n- {prefix} view_whitelist：查看白名单\n- {prefix} view_admins：查看管理员\n- {prefix} loli：获取随机图片\n- {prefix} reaction：随机反应\n- {prefix} bilibili <链接>：解析Bilibili链接",
+        "required": false
+      }
+    }
+  },
+  "global": {
+    "type": "dict",
+    "description": "全局配置",
+    "default": {},
+    "required": false,
+    "schema": {
+      "whitelist": {
+        "type": "dict",
+        "description": "白名单配置",
+        "default": {},
+        "required": false,
+        "schema": {
+          "mode": {
+            "description": "白名单模式：whitelist（白名单）或 blacklist（黑名单）",
+            "type": "string",
+            "default": "whitelist",
+            "required": false
+          },
+          "ai": {
+            "type": "list",
+            "description": "AI接口白名单/黑名单",
+            "default": [],
+            "required": false
+          },
+          "all": {
+            "type": "list",
+            "description": "所有功能白名单/黑名单",
+            "default": [],
+            "required": false
+          }
+        }
+      },
+      "long_message": {
+        "type": "dict",
+        "description": "过长消息处理配置",
+        "default": {},
+        "required": false,
+        "schema": {
+          "enabled": {
+            "description": "是否启用过长消息处理",
+            "type": "boolean",
+            "default": true,
+            "required": false
+          },
+          "max_images": {
+            "description": "最大图片数量",
+            "type": "integer",
+            "default": 3,
+            "min": 1,
+            "required": false
+          },
+          "max_chars": {
+            "description": "最大字符数",
+            "type": "integer",
+            "default": 100,
+            "min": 1,
+            "required": false
+          },
+          "max_lines": {
+            "description": "最大行数",
+            "type": "integer",
+            "default": 10,
+            "min": 1,
+            "required": false
+          }
+        }
+      }
+    }
+  }
+}

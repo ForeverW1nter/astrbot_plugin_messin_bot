@@ -5,6 +5,16 @@ from astrbot.api.event import AstrMessageEvent
 class BaseCommands:
     """基础命令处理类"""
 
+    def __init__(self, command_prefix="mes", help_message=None):
+        """初始化基础命令处理器
+        
+        Args:
+            command_prefix: 命令前缀
+            help_message: 帮助消息
+        """
+        self.command_prefix = command_prefix
+        self.help_message = help_message or "命令列表：\n- {prefix} help：显示帮助信息\n- {prefix} repeat <内容>：重复你说的话\n- {prefix} status：查看机器人状态\n- {prefix} cal <表达式>：计算数学表达式\n- {prefix} fool：随机讲一个笑话\n- {prefix} ai <内容>：智能对话\n- {prefix} create_account：创建经济账号\n- {prefix} sign_in：每日签到\n- {prefix} balance：查看余额\n- {prefix} lottery：抽奖\n- {prefix} transfer <金额> <目标用户ID>：转账\n- {prefix} leaderboard：查看排行榜\n- {prefix} shop：查看商店\n- {prefix} add_whitelist <群ID>：添加白名单\n- {prefix} remove_whitelist <群ID>：移除白名单\n- {prefix} add_admin <用户ID>：添加管理员\n- {prefix} remove_admin <用户ID>：移除管理员\n- {prefix} view_whitelist：查看白名单\n- {prefix} view_admins：查看管理员\n- {prefix} loli：获取随机图片\n- {prefix} reaction：随机反应\n- {prefix} bilibili <链接>：解析Bilibili链接"
+
     async def handle_help(self, event: AstrMessageEvent) -> AsyncGenerator:
         """处理帮助命令
         
@@ -14,29 +24,7 @@ class BaseCommands:
         Yields:
             消息事件结果
         """
-        help_text = "命令列表：\n"
-        help_text += "- mes help：显示帮助信息\n"
-        help_text += "- mes repeat <内容>：重复你说的话\n"
-        help_text += "- mes status：查看机器人状态\n"
-        help_text += "- mes cal <表达式>：计算数学表达式\n"
-        help_text += "- mes fool：随机讲一个笑话\n"
-        help_text += "- mes ai <内容>：智能对话\n"
-        help_text += "- mes create_account：创建经济账号\n"
-        help_text += "- mes sign_in：每日签到\n"
-        help_text += "- mes balance：查看余额\n"
-        help_text += "- mes lottery：抽奖\n"
-        help_text += "- mes transfer <金额> <目标用户ID>：转账\n"
-        help_text += "- mes leaderboard：查看排行榜\n"
-        help_text += "- mes shop：查看商店\n"
-        help_text += "- mes add_whitelist <群ID>：添加白名单\n"
-        help_text += "- mes remove_whitelist <群ID>：移除白名单\n"
-        help_text += "- mes add_admin <用户ID>：添加管理员\n"
-        help_text += "- mes remove_admin <用户ID>：移除管理员\n"
-        help_text += "- mes view_whitelist：查看白名单\n"
-        help_text += "- mes view_admins：查看管理员\n"
-        help_text += "- mes loli：获取随机图片\n"
-        help_text += "- mes reaction：随机反应\n"
-        help_text += "- mes bilibili <链接>：解析Bilibili链接\n"
+        help_text = self.help_message.format(prefix=self.command_prefix)
         yield event.plain_result(help_text)
 
     async def handle_repeat(self, event: AstrMessageEvent, params: str) -> AsyncGenerator:

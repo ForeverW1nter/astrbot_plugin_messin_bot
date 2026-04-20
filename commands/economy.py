@@ -6,13 +6,28 @@ from astrbot.api.event import AstrMessageEvent
 class EconomyCommands:
     """经济系统命令处理类"""
 
-    def __init__(self, data_manager):
+    def __init__(self, data_manager, config=None):
         """初始化经济系统命令处理器
         
         Args:
             data_manager: 数据管理器
+            config: 配置参数
         """
         self.data_manager = data_manager
+        self.config = config or {
+            "initial_balance": 1000,
+            "sign_in_bonus": 100,
+            "streak_bonus": 20,
+            "lottery_cost": 50,
+            "lottery_rewards": {
+                "thanks": 1,
+                "50金币": 50,
+                "100金币": 100,
+                "200金币": 200,
+                "500金币": 500
+            },
+            "shop_items": []
+        }
 
     async def handle_create_account(self, event: AstrMessageEvent) -> AsyncGenerator:
         """处理创建账号命令
@@ -31,8 +46,9 @@ class EconomyCommands:
             return
         
         # 创建新账号
+        initial_balance = self.config.get("initial_balance", 1000)
         economy_data["users"][user_id] = {
-            "balance": 1000,  # 初始金币
+            "balance": initial_balance,  # 初始金币
             "experience": 0,
             "level": 1,
             "last_sign_in": 0,
@@ -40,7 +56,7 @@ class EconomyCommands:
             "inventory": []
         }
         self.data_manager.save_economy_data(economy_data)
-        yield event.plain_result("账号创建成功，初始金币1000")
+        yield event.plain_result(f"账号创建成功，初始金币{initial_balance}")
 
     async def handle_sign_in(self, event: AstrMessageEvent) -> AsyncGenerator:
         """处理签到命令
@@ -69,7 +85,9 @@ class EconomyCommands:
         
         # 计算连续签到奖励
         streak = user_data.get("checkin_streak", 0) + 1
-        bonus = 100 + (streak - 1) * 20  # 连续签到奖励递增
+        sign_in_bonus = self.config.get("sign_in_bonus", 100)
+        streak_bonus = self.config.get("streak_bonus", 20)
+        bonus = sign_in_bonus + (streak - 1) * streak_bonus  # 连续签到奖励递增
         
         # 更新数据
         user_data["balance"] += bonus
@@ -104,21 +122,32 @@ class EconomyCommands:
             return
         
         user_data = economy_data["users"][user_id]
-        if user_data["balance"] < 50:
-            yield event.plain_result("金币不足，抽奖需要50金币")
+        lottery_cost = self.config.get("lottery_cost", 50)
+        if user_data["balance"] < lottery_cost:
+            yield event.plain_result(f"金币不足，抽奖需要{lottery_cost}金币")
             return
         
         # 扣除金币
-        user_data["balance"] -= 50
+        user_data["balance"] -= lottery_cost
         
         # 抽奖逻辑
-        rewards = [
-            (1, "谢谢参与", 0),
-            (2, "50金币", 50),
-            (3, "100金币", 100),
-            (4, "200金币", 200),
-            (5, "500金币", 500)
-        ]
+        lottery_rewards = self.config.get("lottery_rewards", {
+            "thanks": 1,
+            "50金币": 50,
+            "100金币": 100,
+            "200金币": 200,
+            "500金币": 500
+        })
+        
+        # 转换奖励格式
+        rewards = []
+        for name, amount in lottery_rewards.items():
+            if name == "thanks":
+                rewards.append((1, "谢谢参与", 0))
+            else:
+                # 尝试从名称中提取权重，如果没有则使用默认权重
+                weight = 2  # 默认权重
+                rewards.append((weight, name, amount))
         
         # 计算概率
         total = sum([r[0] for r in rewards])
