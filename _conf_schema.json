@@ -1,6 +1,6 @@
 {
   "api": {
-    "type": "dict",
+    "type": "object",
     "description": "API配置",
     "default": {},
     "required": false,
@@ -20,7 +20,7 @@
     }
   },
   "economy": {
-    "type": "dict",
+    "type": "object",
     "description": "经济系统配置",
     "default": {},
     "required": false,
@@ -33,7 +33,7 @@
         "required": false
       },
       "sign_in": {
-        "type": "dict",
+        "type": "object",
         "description": "签到配置",
         "default": {},
         "required": false,
@@ -55,7 +55,7 @@
         }
       },
       "lottery": {
-        "type": "dict",
+        "type": "object",
         "description": "抽奖配置",
         "default": {},
         "required": false,
@@ -69,7 +69,7 @@
           },
           "rewards": {
             "description": "抽奖奖励配置",
-            "type": "dict",
+            "type": "object",
             "default": {
               "thanks": 1,
               "50金币": 50,
@@ -109,7 +109,7 @@
     "required": false
   },
   "admin": {
-    "type": "dict",
+    "type": "object",
     "description": "管理系统配置",
     "default": {},
     "required": false,
@@ -129,13 +129,13 @@
     }
   },
   "entertainment": {
-    "type": "dict",
+    "type": "object",
     "description": "娱乐系统配置",
     "default": {},
     "required": false,
     "schema": {
       "loli": {
-        "type": "dict",
+        "type": "object",
         "description": "图片功能配置",
         "default": {},
         "required": false,
@@ -149,7 +149,7 @@
         }
       },
       "reaction": {
-        "type": "dict",
+        "type": "object",
         "description": "反应功能配置",
         "default": {},
         "required": false,
@@ -178,13 +178,13 @@
     }
   },
   "tool": {
-    "type": "dict",
+    "type": "object",
     "description": "工具系统配置",
     "default": {},
     "required": false,
     "schema": {
       "bilibili": {
-        "type": "dict",
+        "type": "object",
         "description": "Bilibili解析配置",
         "default": {},
         "required": false,
@@ -200,7 +200,7 @@
     }
   },
   "message": {
-    "type": "dict",
+    "type": "object",
     "description": "消息配置",
     "default": {},
     "required": false,
@@ -220,13 +220,13 @@
     }
   },
   "global": {
-    "type": "dict",
+    "type": "object",
     "description": "全局配置",
     "default": {},
     "required": false,
     "schema": {
       "whitelist": {
-        "type": "dict",
+        "type": "object",
         "description": "白名单配置",
         "default": {},
         "required": false,
@@ -252,7 +252,7 @@
         }
       },
       "long_message": {
-        "type": "dict",
+        "type": "object",
         "description": "过长消息处理配置",
         "default": {},
         "required": false,
